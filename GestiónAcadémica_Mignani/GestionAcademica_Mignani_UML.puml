@@ -1,0 +1,74 @@
+@startuml
+
+title Classes - Class Diagram
+
+class Persona{
+  #int dni
+  #String nombre
+  #String apellido
+  #String email
+  #Date fechaNacimiento
+  +Persona(int dni, String nombre, String apellido, String email, Date fechaNacimiento)
+  +String getNombreCompleto()
+}
+
+class Alumno {
+  -int legajo
+  +Alumno(int dni, String nombre, String apellido, String email, Date fechaNacimiento, int legajo)
+  +void mostrarRol()
+}
+
+class Profesor{
+  +Profesor(int dni, String nombre, String apellido, String email, Date fechaNacimiento)
+  +void mostrarRol()
+}
+
+class Curso{
+  -int idCurso
+  -String nombre
+  -Profesor profesorResponsable
+  -int cupoMax
+  -ArrayList<Inscripcion> listaInscripciones
+  -int contadorInscripciones
+  +Curso(int idCurso, String nombre, Profesor profesorResponsable, int cupoMax)
+  -int generarId()
+  +void inscribirAlumno(Alumno alumno)
+  +void eliminarInscripcion(int idBusqueda)
+  +void listarInscritos()
+}
+
+class Inscripcion{
+  -int idInscripcion
+  -Alumno estudiante
+  -Curso curso
+  -Date fechaInscripcion
+  +Inscripcion(int idInscripcion, Alumno estudiante, Curso curso, Date fechaInscripcion) 
+  +void darDeBaja()
+}
+
+class Calificacion{
+  -int idCalificacion
+  -Inscripcion matricula
+  -double nota
+  +Calificacion(int idCalificacion, Inscripcion matricula, double nota)
+  +void mostrarCalificacionesDNI()
+}
+
+'HERENCIA
+Persona <|-- Alumno
+Persona <|-- Profesor
+
+'COMPOSICIÓN 
+Curso *-- Inscripcion
+'La inscripción depende del curso, no existe sin él
+
+'AGREGACION
+Profesor o-- Curso
+'El profesor existe sin el curso, la relación es débil
+
+'ASOCIACIONES
+Inscripcion --> Alumno
+Calificacion --> Inscripcion
+'Se relacionan entre sí, pero pueden existir de forma independiente
+
+@enduml
