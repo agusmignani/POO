@@ -7,9 +7,15 @@ public class Profesor extends Persona { //Herencia
         super(dni, nombre, apellido, email, fechaNacimiento);
     }
     
-    // Polimorfismo Dinámico
+    // Polimorfismo Dinámico (Sobrescritura)
     @Override
     public void mostrarRol() {
         System.out.println("Soy el profesor responsable: " + getNombreCompleto());
+    }
+    
+    // Implementación obligatoria de la interfaz Reportable (Polimorfismo Dinámico)
+    @Override
+    public String obtenerReporteLimpio() {
+        return "[PROFESOR] DNI: " + getDni() + " - " + getNombreCompleto() + " (" + getEmail() + ")";
     }
 }

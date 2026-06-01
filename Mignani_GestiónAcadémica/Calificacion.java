@@ -3,39 +3,20 @@ public class Calificacion{
 	private Inscripcion inscripcion;
 	private double nota;
 	
-	// Constructor
     public Calificacion(int idCalificacion, Inscripcion inscripcion, double nota) {
         this.idCalificacion = idCalificacion;
         this.inscripcion = inscripcion;
         this.nota = nota;
     }
     
-    //Getter: Consultar id
-    public int getIdCalificacion(){
-			return idCalificacion;
-	}
+    public int getIdCalificacion(){	return idCalificacion; }
+	public void setIdCalificacion(int id){ this.idCalificacion = id; }
 	
-	//Setter: Modificar id
-	public void setIdCalificacion(int id){
-			this.idCalificacion = id;
-	}
+	public Inscripcion getInscripcion(){ return inscripcion; }
+	public void setInscripcion(Inscripcion inscripcion){ this.inscripcion = inscripcion; }
 	
-	//Getter: Consultar inscripcion
-	public Inscripcion getInscripcion(){
-		return inscripcion;
-	}
+	public double getNota(){ return nota; }
 	
-	//Setter: Modificar inscripcion
-	public void setInscripcion(Inscripcion inscripcion){
-			this.inscripcion = inscripcion;
-	}
-	
-	//Getter: Consultar nota
-	public double getNota(){
-			return nota;
-	}
-	
-    //Setter: Actualizar nota
     public void setNota(double nota){
 		if(nota >= 0 && nota <= 10){
 			this.nota = nota;
@@ -44,7 +25,7 @@ public class Calificacion{
 		}
     }
     
-    //Método
+   //Método
    public void mostrarCalificacionesDNI(){
     System.out.println("El alumno " + inscripcion.getAlumno().getNombre() + 
                        " con DNI " + inscripcion.getAlumno().getDni() + 
