@@ -21,7 +21,7 @@ public class Calificacion{
 		if(nota >= 0 && nota <= 10){
 			this.nota = nota;
 		} else {
-			System.out.println("ERROR: Nota inválida (debe ser entre 0 y 10)");
+			throw new IllegalArgumentException("La nota debe estar entre 0 y 10. Valor recibido: " + nota);
 		}
     }
     

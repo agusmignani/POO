@@ -10,6 +10,12 @@ public class Curso {
     private int contadorInscripciones = 1; // Autogenerar IDs de inscripción
 
     public Curso(int idCurso, String nombre, Profesor profesorResponsable, int cupoMax) {
+        if (cupoMax <= 0) {
+            throw new IllegalArgumentException("El cupo máximo del curso debe ser mayor a cero. Valor recibido: " + cupoMax);
+        }
+        if (profesorResponsable == null) {
+            throw new IllegalArgumentException("El curso debe tener asignado un profesor responsable obligatorio.");
+        }
         this.idCurso = idCurso;
         this.nombre = nombre;
         this.profesorResponsable = profesorResponsable;
@@ -22,7 +28,7 @@ public class Curso {
 	}
     
     // Polimorfismo estático (Sobrecarga). Versión 1: Inscribe recibiendo un objeto Alumno completo.
-    public void inscribirAlumno(Alumno alumno) { 
+    public void inscribirAlumno(Alumno alumno) throws CupoExcedidoException {
         if (estaInscripto(alumno.getDni())) {
             System.out.println("ERROR: El alumno " + alumno.getNombre() + " ya está inscripto.");
             return;
@@ -31,7 +37,7 @@ public class Curso {
     }
 
 	// Polimorfismo estático (Sobrecarga). Versión 2: Sobrecarga. Permite inscribir usando solo datos básicos (Útil para inscripciones rápidas o manuales.).
-    public void inscribirAlumno(int dni, String nombre, String apellido) { 
+    public void inscribirAlumno(int dni, String nombre, String apellido) throws CupoExcedidoException {
         System.out.println("SISTEMA: Iniciando inscripción rápida para DNI: " + dni);
         
         if (estaInscripto(dni)) {
@@ -48,10 +54,10 @@ public class Curso {
                 .anyMatch(inscripcion -> inscripcion.getAlumno().getDni() == dni);
     }
 
-    private void procesarInscripcion(Alumno alumno) { // Método centralizador de lógica (Principio DRY - No repetir código)
+    private void procesarInscripcion(Alumno alumno) throws CupoExcedidoException { // Método centralizador de lógica (Principio DRY - No repetir código)
         if (listaInscripciones.size() < cupoMax) {
             Inscripcion nueva = new Inscripcion( // Crea la instancia de la relación (Asociación) entre Alumno y Curso
-                contadorInscripciones++, 
+                generarId(),
                 alumno, 
                 this, 
                 new Date()
@@ -59,7 +65,7 @@ public class Curso {
             listaInscripciones.add(nueva);
             System.out.println("ÉXITO: " + alumno.getNombre() + " ha sido inscripto en " + this.nombre);
         } else {
-            System.out.println("ERROR: Cupo agotado en " + this.nombre + ". No se pudo inscribir a " + alumno.getNombre());
+            throw new CupoExcedidoException("No se pudo inscribir a " + alumno.getNombre() + ". Cupo agotado en " + this.nombre);
         }
     }
 
@@ -99,6 +105,14 @@ public class Curso {
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
+    
+    public int getCupoMax() { return cupoMax; }
+    public void setCupoMax(int cupoMax) {
+        if (cupoMax <= 0) {
+            throw new IllegalArgumentException("El cupo máximo debe ser mayor a cero.");
+        }
+        this.cupoMax = cupoMax;
+    }
 
     public Profesor getProfesorResponsable() { return profesorResponsable; }
     public void setProfesorResponsable(Profesor profesor) { this.profesorResponsable = profesor; }

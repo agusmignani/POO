@@ -3,7 +3,7 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
-		// Colección polimórfica basada en la superclase (Regla "Es un": Alumno/Profesor ES UNA Persona)
+        // Colección polimórfica basada en la superclase (Regla "Es un": Alumno/Profesor ES UNA Persona)
         ArrayList<Persona> integrantesSistemas = new ArrayList<>(); 
         
         Profesor profMatias = new Profesor(20111222, "Matias", "Galvan", "maty@gmail.com", new Date());
@@ -22,34 +22,47 @@ public class Main {
         }
 
         System.out.println("\n>>> 2. PRUEBA DE SOBRECARGA (Polimorfismo Estático) <<<");
-        Curso cursoPOO = new Curso(101, "Programación Orientada a Objetos", (Profesor)integrantesSistemas.get(0), 2);// Crea el curso usando el profesor que está en nuestra lista (posicion 0)
+        Curso cursoPOO = new Curso(101, "Programación Orientada a Objetos", (Profesor)integrantesSistemas.get(0), 2);
 
-        System.out.println("Intentando inscripción tradicional...");
-        cursoPOO.inscribirAlumno(alumnoVanina); // Versión 1: Pasamos el objeto Alumno completo
-
-        System.out.println("\nIntentando inscripción rápida (Sobrecarga)...");
-        cursoPOO.inscribirAlumno(40222333, "Rodrigo", "Lascano"); // Versión 2:Pasamos solo datos básicos (DNI, Nombre, Apellido). El compilador sabe que debe usar el segundo método por los parámetros.
+        try {
+            System.out.println("Intentando inscripción tradicional para el alumno: " + alumnoVanina.getNombreCompleto() + "...");
+            cursoPOO.inscribirAlumno(alumnoVanina); 
+            System.out.println("\nIntentando inscripción rápida (Sobrecarga)...");
+            cursoPOO.inscribirAlumno(40222333, "Rodrigo", "Lascano"); 
+        } catch (CupoExcedidoException e) {
+            System.out.println("ERROR EN LA INSCRIPCIÓN INICIAL: " + e.getMessage());
+        }
 
         System.out.println("\n>>> 3. PRUEBA DE LÍMITES Y REGLAS DE NEGOCIO <<<");
-        cursoPOO.inscribirAlumno(alumnoAgustina); // Esta debería fallar por cupo (puse máximo 2 y ya se anotaron Vanina y Rodrigo)
-        
-        cursoPOO.inscribirAlumno(alumnoVanina); // Intentar anotar a alguien que ya está (Vanina)
+        try {
+            System.out.println("Intentando inscribir a " + alumnoAgustina.getNombreCompleto() + " (Debería fallar por cupo)...");
+            cursoPOO.inscribirAlumno(alumnoAgustina); 
+        } catch (CupoExcedidoException e) {
+            System.out.println("Capturado en Catch -> " + e.getMessage()); 
+        }
 
-        System.out.println("\n>>> 4. ESTADO FINAL DEL CURSO <<<");
+        try {
+            System.out.println("\nIntentando asignar una nota inválida (12)...");
+            Calificacion califPrueba = new Calificacion(1, cursoPOO.getListaInscripciones().get(0), 5);
+            califPrueba.setNota(12);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Capturado en Catch -> Error de validación: " + e.getMessage());
+        }
+        
+        System.out.println("\n>>> 4. ESTADO FINAL DEL CURSO: " + cursoPOO.getNombre().toUpperCase() + " <<<");
         cursoPOO.listarInscritos();
 
         System.out.println("\n>>> 4.B PRUEBA DE POLIMORFISMO POR INTERFAZ <<<");
-        // Una lista que unifica objetos completamente distintos (Persona e Inscripción) bajo el tipo de la interfaz
         ArrayList<Reportable> elementosAImprimir = new ArrayList<>();
+        
         elementosAImprimir.add(profMatias);
         elementosAImprimir.add(alumnoVanina);
-        // Obtenemos la inscripción nro 1 directamente del curso para la prueba
+        
         if(!cursoPOO.getListaInscripciones().isEmpty()){
             elementosAImprimir.add(cursoPOO.getListaInscripciones().get(0));
         }
 
         for (Reportable reporte : elementosAImprimir) {
-            // El comportamiento cambia según la instancia real del objeto en tiempo de ejecución
             System.out.println(reporte.obtenerReporteLimpio());
         }
 
